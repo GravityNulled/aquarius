@@ -42,7 +42,7 @@ const Request = () => {
   const [bloodGroup, setBloodGroup] = useState<string>();
   const [reason, setReason] = useState<string>();
   const [date, setDate] = useState<Date>();
-
+  const status = "pending";
   const router = useRouter();
   const { toast } = useToast();
 
@@ -55,6 +55,7 @@ const Request = () => {
         group: bloodGroup,
         reason,
         date,
+        status,
       });
       toast({
         title: "Schedule: Blood Request",
