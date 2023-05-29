@@ -16,9 +16,8 @@ export async function POST(request: Request) {
         reason,
       },
     });
-    console.log(bloodrequest);
-    return NextResponse.json(bloodrequest);
+    return NextResponse.json(bloodrequest, { status: 500 });
   } catch (error) {
-    return NextResponse.json({ message: "error" });
+    return NextResponse.json({ message: "server error" }, { status: 500 });
   }
 }
