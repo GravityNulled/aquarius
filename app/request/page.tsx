@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, MouseEvent, useState } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { BloodRequest } from "@prisma/client";
 
 const Request = () => {
   const [name, setName] = useState<string>();
@@ -47,7 +48,7 @@ const Request = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post<IBloodRequest>("/api/bloodrequest", {
+      const res = await axios.post<BloodRequest>("/api/bloodrequest", {
         name,
         email,
         phone,
@@ -55,7 +56,6 @@ const Request = () => {
         reason,
         date,
       });
-
       toast({
         title: "Schedule: Blood Request",
         description:

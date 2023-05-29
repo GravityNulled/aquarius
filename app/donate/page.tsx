@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Donation } from "@prisma/client";
 
 const Donate = () => {
   const [name, setName] = useState<string>();
@@ -48,7 +49,7 @@ const Donate = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post<IDonation>("/api/donate", {
+      const res = await axios.post<Donation>("/api/donate", {
         name,
         email,
         phone,
