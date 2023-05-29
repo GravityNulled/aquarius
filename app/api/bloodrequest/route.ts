@@ -14,6 +14,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: "server error" }, { status: 500 });
     }
   } else {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 }
 
