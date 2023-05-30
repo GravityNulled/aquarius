@@ -37,7 +37,7 @@ const Login = () => {
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     } else {
-      router.push("/admin/home");
+      router.push("/admin");
     }
   };
 
