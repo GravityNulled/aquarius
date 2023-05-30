@@ -1,24 +1,4 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import Modal from "@/components/modal";
 
 import {
   Table,
@@ -31,24 +11,25 @@ import {
 } from "@/components/ui/table";
 
 import { BloodRequest } from "@prisma/client";
-import { useEffect, useRef, useState } from "react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-const Admin = () => {
-  const [requestInfo, setRequestInfo] = useState<BloodRequest[]>();
-  const [requestStatus, setRequestStatus] = useState<string>("Pending");
-  const [idRequest, setIdRequest] = useState<string>("");
+const getdata = async () => {
+  const response = await fetch("http://localhost:3000/api/bloodrequest", {
+    cache: "force-cache",
+  });
+  const res = await response.json();
+  return res;
+};
 
-  useEffect(() => {
-    const data = async () => {
-      const response = await fetch("http://localhost:3000/api/bloodrequest", {
-        cache: "no-store",
-      });
-      const res = await response.json();
-      setRequestInfo(res);
-    };
-    data();
-  }, []);
+const Admin = async () => {
+  const session = await getServerSession(authOptions);
 
+  if (!session) {
+    redirect("/");
+  }
+  const requestInfo: BloodRequest[] = await getdata();
   return (
     <div className="mt-10 container w-full p-4 md:w-5/6 mx-auto">
       <h1 className="text-3xl font-medium mb-5 text-center uppercase">
@@ -75,58 +56,16 @@ const Admin = () => {
               <TableCell>{request.reason}</TableCell>
               <TableCell className="text-right">{request.status}</TableCell>
               <TableCell>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">Edit Request</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit Request</DialogTitle>
-                      <DialogDescription>
-                        Edit the request status
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                          Name
-                        </Label>
-                        <Input
-                          id="name"
-                          value={request.name}
-                          className="col-span-3"
-                          disabled
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                          ID
-                        </Label>
-                        <Input
-                          id="name"
-                          value={request.id}
-                          className="col-span-3"
-                          readOnly
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Status</Label>
-                        <Select onValueChange={(e) => setRequestStatus(e)}>
-                          <SelectTrigger className="w-[200px]">
-                            <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                          <SelectContent className="w-[200px]">
-                            <SelectItem value="accepted">Accepted</SelectItem>
-                            <SelectItem value="rejected">Rejected</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit">Save changes</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <Modal
+                  date={request.date}
+                  email={request.email}
+                  id={request.id}
+                  group={request.group}
+                  name={request.name}
+                  phone={request.phone}
+                  reason={request.reason}
+                  status={request.status}
+                />
               </TableCell>
             </TableRow>
           ))}
