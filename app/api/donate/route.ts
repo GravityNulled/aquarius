@@ -22,3 +22,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "server error" }, { status: 500 });
   }
 }
+
+export async function GET(request: Request) {
+  try {
+    const requests: Donation[] = await prisma.donation.findMany();
+    return NextResponse.json(requests, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "server error" }, { status: 500 });
+  }
+}
